@@ -1,0 +1,24 @@
+<?php
+session_start();
+include_once($_SERVER['DOCUMENT_ROOT'] . '/RS/user.php');
+$query = new DB;
+
+$get = $query->getStatus($_SESSION['email']);
+if($_POST['start']){
+    if(empty($_SESSION['email'])){
+        $result['reqest'] = 'not session';
+    }elseif(!empty($_SESSION['email'])){
+        $result['itog'] = 'Пользователь существует.';
+        $dir = $_SERVER['DOCUMENT_ROOT'] . '/RS/rs_3/ajax/' . $_SESSION['email'] . '/';
+        $arr_dir = scandir($dir);
+        $select_arr = array_slice($arr_dir, 2);
+        $result['sel'] .= '<select name="req_rs_file" id="req_rs_file">';
+        foreach($select_arr as $value) {
+            $result['sel'] .= '<option value="' . $value . '">' . $value . '</option>';
+        }
+        $result['sel'] .= '</select>';
+    }
+    if($get['COUNT'] >= 2){
+        $result['btn'] = 'btn stop';
+    }
+}
